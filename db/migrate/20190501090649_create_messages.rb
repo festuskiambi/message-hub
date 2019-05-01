@@ -4,7 +4,7 @@ class CreateMessages < ActiveRecord::Migration[5.2]
       t.string :originator
       t.string :content
       t.string :recipient
-      t.integer :status
+      t.integer :status, default: 1
 
       t.timestamps
     end
