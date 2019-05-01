@@ -8,26 +8,12 @@ class MessagesController < ApplicationController
     render json: @messages
   end
 
-  # GET /messages/1
-  def show
-    render json: @message
-  end
-
   # POST /messages
   def create
     @message = Message.new(message_params)
 
     if @message.save
       render json: @message, status: :created, location: @message
-    else
-      render json: @message.errors, status: :unprocessable_entity
-    end
-  end
-
-  # PATCH/PUT /messages/1
-  def update
-    if @message.update(message_params)
-      render json: @message
     else
       render json: @message.errors, status: :unprocessable_entity
     end
@@ -47,6 +33,6 @@ class MessagesController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def message_params
-    params.require(:message).permit(:originator, :content, :recipient, :status)
+    params.permit(:originator, :content, :recipient, :status)
   end
 end
