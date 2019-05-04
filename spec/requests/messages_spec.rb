@@ -3,9 +3,13 @@ require 'rails_helper'
 RSpec.describe 'Messages', type: :request do
   let!(:messages) { create_list(:message, 10) }
   let(:message_id) { messages.first.id }
+  let(:user) { create(:user) }
+
+  # authorize request
+  let(:headers) { valid_headers }
 
   describe 'GET /messages' do
-    before { get '/messages' }
+    before { get '/messages', params: {}, headers: headers }
 
     it 'returns status code 200' do
       expect(response).to have_http_status(200)
@@ -22,10 +26,10 @@ RSpec.describe 'Messages', type: :request do
       { originator: 'Festus kiambi',
         recipient: 'John Doe',
         content: 'how are you doing',
-        status: 1 }
+        status: 1 }.to_json
     }
     context 'with valid attibutes' do
-      before { post '/messages', params: valid_attributes }
+      before { post '/messages', params: valid_attributes, headers: headers }
 
       it 'creates a message' do
         expect(json).not_to be_empty
@@ -38,7 +42,10 @@ RSpec.describe 'Messages', type: :request do
     end
 
     context 'when message does not exists' do
-      before { post '/messages', params: { originator: 'Festus kiambi' } }
+      before do
+        post '/messages',
+             params: { originator: 'Festus kiambi' }.to_json, headers: headers
+      end
 
       it 'returns validation failed message' do
         expect(response.body).to match(/can't be blank/)
@@ -51,7 +58,7 @@ RSpec.describe 'Messages', type: :request do
   end
 
   describe 'DELETE /messages/:id' do
-    before { delete "/messages/#{message_id}" }
+    before { delete "/messages/#{message_id}", headers: headers }
     it 'returns status code 204' do
       expect(response).to have_http_status(204)
     end
