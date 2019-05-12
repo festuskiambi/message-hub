@@ -7,11 +7,10 @@ before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
 dist: trusty
 language: ruby
-before_install:
-  - gem update --system
 rvm:
   - '2.6.1'
 script:
- - bundle exec rails db:migrate RAILS_ENV=test
- - bundle exec rspec
+  - bundle install — jobs=3 — retry=3
+  - bundle exec rails db:migrate RAILS_ENV=test
+  - bundle exec rspec
 sudo: false
